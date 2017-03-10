@@ -43,11 +43,15 @@ class SmoothLineChartBasic extends Component {
     ]
 
     let options = {
+      width: 200,
+      height: 200,
       areasOpacity: 0.5,
-      strokeWidth: 4,
-      width: 280,
-      height: 280,
+      strokeWidth: 5,
       color: '#2980B9',
+      lastPoint: {
+        r: 10,
+        fill: 'white'
+      },
       margin: {
         top: 0,
         left: 0,

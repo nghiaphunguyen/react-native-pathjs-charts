@@ -18,7 +18,7 @@ SPDX-License-Identifier: Apache-2.0
 
 import React,{Component} from 'react'
 import {Text as ReactText}  from 'react-native'
-import Svg,{ G, Path, Rect, Text } from 'react-native-svg'
+import Svg,{ G, Path, Rect, Text, Circle } from 'react-native-svg'
 import { Colors, Options, cyclic, fontAdapt } from './util'
 import Axis from './Axis'
 import _ from 'lodash'
@@ -62,31 +62,6 @@ export default class LineChart extends Component {
     return Colors.string(cyclic(pallete, i))
   }
 
-  lastPointFrom(lines) {
-    let length = lines.length
-    let path = null
-    if (length - 1 > 0) {
-      path = lines[length - 1].props.d
-    }
-
-    if (path != null) {
-      let components = path.split(' ')
-      let lengthC = components.length
-      if (lengthC => 2) {
-        let x = parseFloat(components[lengthC - 2])
-        let y = parseFloat(components[lengthC - 1])
-        if (isNaN(x) == false && isNaN(y) == false) {
-          return {
-            x: x,
-            y: y
-          }
-        }
-      }
-    }
-
-    return null
-  }
-
   render() {
     const noDataMsg = this.props.noDataMessage || 'No data available'
     if (this.props.data === undefined) return (<ReactText>{noDataMsg}</ReactText>)
@@ -99,12 +74,15 @@ export default class LineChart extends Component {
       }
     }
 
+    let lastPointOptions = this.props.options.lastPoint;
+    let chartWidth = options.width - (lastPointOptions == null ? 0 : lastPointOptions.r)
+    let chartHeight = options.height
     let chart = this.chartType({
       data: this.props.data,
       xaccessor: accessor(this.props.xKey),
       yaccessor: accessor(this.props.yKey),
-      width: options.chartWidth,
-      height: options.chartHeight,
+      width: chartWidth,
+      height: chartHeight,
       closed: false,
       minX: options.axisX.min,
       maxX: options.axisX.max,
@@ -121,12 +99,34 @@ export default class LineChart extends Component {
     let showAreas = typeof(this.props.options.showAreas) !== 'undefined' ? this.props.options.showAreas : true;
     let strokeWidth = typeof(this.props.options.strokeWidth) !== 'undefined' ? this.props.options.strokeWidth : '1';
     let areasOpacity = typeof(this.props.options.areasOpacity) !== 'undefined' ? this.props.options.areasOpacity : 0.8;
+
+    let path = null
     let lines = _.map(chart.curves, function (c, i) {
-      return <Path key={'lines' + i} d={ c.line.path.print() } stroke={ this.color(i) } strokeWidth={strokeWidth} fill="none"/>
+      path = c.line.path.print()
+      return <Path key={'lines' + i} d={ path } stroke={ this.color(i) } strokeWidth={strokeWidth} fill="none"/>
     }.bind(this))
 
-    console.log("Last point")
-    console.log(lastPointFrom(lines))
+    let lastPoint = null
+    if (path != null) {
+      let components = path.split(' ')
+      let lengthC = components.length
+      if (lengthC => 2) {
+        let x = parseFloat(components[lengthC - 2])
+        let y = parseFloat(components[lengthC - 1])
+
+        if (isNaN(x) == false && isNaN(y) == false) {
+            lastPoint = {
+              x: x,
+              y: y
+            }
+        }
+      }
+    }
+
+    let circleLastPoint = null
+    if (lastPoint != null && lastPointOptions != null) {
+      circleLastPoint = <Circle {...lastPointOptions} cx={lastPoint.x} cy={lastPoint.y} />
+    }
 
     let areas = null
 
@@ -196,6 +196,7 @@ export default class LineChart extends Component {
                         { regions }
                         { areas }
                         { lines }
+                        { circleLastPoint }
                       {/* <Axis key="x" scale={chart.xscale} options={options.axisX} chartArea={chartArea} />
                       <Axis key="y" scale={chart.yscale} options={options.axisY} chartArea={chartArea} /> */}
                   </G>
