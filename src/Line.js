@@ -62,6 +62,31 @@ export default class LineChart extends Component {
     return Colors.string(cyclic(pallete, i))
   }
 
+  lastPointFrom(lines) {
+    let length = lines.length
+    let path = null
+    if (length - 1 > 0) {
+      path = lines[length - 1].props.d
+    }
+
+    if (path != null) {
+      let components = path.split(' ')
+      let lengthC = components.length
+      if (lengthC => 2) {
+        let x = parseFloat(components[lengthC - 2])
+        let y = parseFloat(components[lengthC - 1])
+        if (isNaN(x) == false && isNaN(y) == false) {
+          return {
+            x: x,
+            y: y
+          }
+        }
+      }
+    }
+
+    return null
+  }
+
   render() {
     const noDataMsg = this.props.noDataMessage || 'No data available'
     if (this.props.data === undefined) return (<ReactText>{noDataMsg}</ReactText>)
@@ -81,26 +106,33 @@ export default class LineChart extends Component {
       width: options.chartWidth,
       height: options.chartHeight,
       closed: false,
-      min: options.min,
-      max: options.max
+      minX: options.axisX.min,
+      maxX: options.axisX.max,
+      minY: options.axisY.min,
+      maxY: options.axisY.max
     })
 
     let chartArea = {
-      x:this.getMaxAndMin(chart,this.props.xKey,chart.xscale),
-      y:this.getMaxAndMin(chart,this.props.yKey,chart.yscale,options.min,options.max),
+      x:this.getMaxAndMin(chart,this.props.xKey,chart.xscale, options.axisX.min, options.axisX.max),
+      y:this.getMaxAndMin(chart,this.props.yKey,chart.yscale, options.axisY.min, options.axisY.max),
       margin:options.margin
     }
 
     let showAreas = typeof(this.props.options.showAreas) !== 'undefined' ? this.props.options.showAreas : true;
     let strokeWidth = typeof(this.props.options.strokeWidth) !== 'undefined' ? this.props.options.strokeWidth : '1';
+    let areasOpacity = typeof(this.props.options.areasOpacity) !== 'undefined' ? this.props.options.areasOpacity : 0.8;
     let lines = _.map(chart.curves, function (c, i) {
       return <Path key={'lines' + i} d={ c.line.path.print() } stroke={ this.color(i) } strokeWidth={strokeWidth} fill="none"/>
     }.bind(this))
+
+    console.log("Last point")
+    console.log(lastPointFrom(lines))
+
     let areas = null
 
     if(showAreas){
       areas = _.map(chart.curves, function (c, i) {
-        return <Path key={'areas' + i} d={ c.area.path.print() } fillOpacity={0.5} stroke="none" fill={ this.color(i) }/>
+        return <Path key={'areas' + i} d={ c.area.path.print() } fillOpacity={areasOpacity} stroke="none" fill={ this.color(i) }/>
       }.bind(this))
     }
 
@@ -160,12 +192,12 @@ export default class LineChart extends Component {
     }
 
     let returnValue = <Svg width={options.width} height={options.height}>
-                  <G x={options.margin.left} y={options.margin.top}>
+                  <G x={0} y={0}>
                         { regions }
                         { areas }
                         { lines }
-                      <Axis key="x" scale={chart.xscale} options={options.axisX} chartArea={chartArea} />
-                      <Axis key="y" scale={chart.yscale} options={options.axisY} chartArea={chartArea} />
+                      {/* <Axis key="x" scale={chart.xscale} options={options.axisX} chartArea={chartArea} />
+                      <Axis key="y" scale={chart.yscale} options={options.axisY} chartArea={chartArea} /> */}
                   </G>
               </Svg>
 

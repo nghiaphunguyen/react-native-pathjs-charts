@@ -10,8 +10,9 @@
     "moment": "^2.17.1",
     "react": "^15.4.1",
     "react-native": "~0.41.0",
-    "react-native-pathjs-charts": "file:../",
-    "react-native-side-menu": "^0.20.1"
+    "react-native-pathjs-charts": "file:///Users/nghianguyen/Documents/Workspace/Corner/react-native-pathjs-charts",
+    "react-native-side-menu": "^0.20.1",
+    "undefined": "^0.1.0"
   },
   "devDependencies": {
     "babel-polyfill": "^6.22.0",

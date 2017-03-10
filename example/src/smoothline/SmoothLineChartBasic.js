@@ -25,183 +25,91 @@ import { SmoothLine } from 'react-native-pathjs-charts'
 
 class SmoothLineChartBasic extends Component {
   render() {
+
+
     let data = [
       [{
-        "x": -10,
-        "y": -1000
-      }, {
-        "x": -9,
-        "y": -729
-      }, {
-        "x": -8,
-        "y": -512
-      }, {
-        "x": -7,
-        "y": -343
-      }, {
-        "x": -6,
-        "y": -216
-      }, {
-        "x": -5,
-        "y": -125
-      }, {
-        "x": -4,
-        "y": -64
-      }, {
-        "x": -3,
-        "y": -27
-      }, {
-        "x": -2,
-        "y": -8
-      }, {
-        "x": -1,
-        "y": -1
-      }, {
-        "x": 0,
-        "y": 0
-      }, {
         "x": 1,
-        "y": 1
-      }, {
-        "x": 2,
-        "y": 8
-      }, {
-        "x": 3,
-        "y": 27
-      }, {
-        "x": 4,
-        "y": 64
-      }, {
-        "x": 5,
-        "y": 125
-      }, {
-        "x": 6,
-        "y": 216
-      }, {
-        "x": 7,
-        "y": 343
-      }, {
-        "x": 8,
-        "y": 512
-      }, {
-        "x": 9,
-        "y": 729
-      }, {
-        "x": 10,
-        "y": 1000
-      }],
-      [{
-        "x": -10,
-        "y": 100
-      }, {
-        "x": -9,
-        "y": 81
-      }, {
-        "x": -8,
-        "y": 64
-      }, {
-        "x": -7,
-        "y": 49
-      }, {
-        "x": -6,
-        "y": 36
-      }, {
-        "x": -5,
-        "y": 25
-      }, {
-        "x": -4,
-        "y": 16
-      }, {
-        "x": -3,
-        "y": 9
-      }, {
-        "x": -2,
-        "y": 4
-      }, {
-        "x": -1,
-        "y": 1
-      }, {
-        "x": 0,
-        "y": 0
-      }, {
-        "x": 1,
-        "y": 1
-      }, {
-        "x": 2,
-        "y": 4
-      }, {
-        "x": 3,
-        "y": 9
-      }, {
-        "x": 4,
-        "y": 16
-      }, {
-        "x": 5,
-        "y": 25
-      }, {
-        "x": 6,
-        "y": 36
-      }, {
-        "x": 7,
-        "y": 49
-      }, {
-        "x": 8,
-        "y": 64
-      }, {
-        "x": 9,
-        "y": 81
-      }, {
-        "x": 10,
-        "y": 100
+        "y": 60
+      },
+      {
+        "x": 12,
+        "y": 80
+      },
+      {
+        "x": 30,
+        "y": 40
       }]
     ]
 
     let options = {
+      areasOpacity: 0.5,
+      strokeWidth: 4,
       width: 280,
       height: 280,
       color: '#2980B9',
       margin: {
-        top: 20,
-        left: 45,
-        bottom: 25,
-        right: 20
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0
       },
       animate: {
         type: 'delayed',
         duration: 200
       },
       axisX: {
-        showAxis: true,
-        showLines: true,
+        min: 1,
+        max: 30,
+        showAxis: false,
+        showLines: false,
         showLabels: true,
-        showTicks: true,
-        zeroAxis: false,
+        showTicks: false,
+        zeroAxis: true,
         orient: 'bottom',
         label: {
           fontFamily: 'Arial',
           fontSize: 14,
           fontWeight: true,
           fill: '#34495E'
+        },
+        tickValues: [0, 10, 20],
+        // tickCount: 3,
+        labelFunction: (item, index) => {
+            // if (index == 4) {
+            //   return " "
+            // }
+            return "Nov " + item
         }
       },
       axisY: {
-        showAxis: true,
-        showLines: true,
+        min: 0,
+        max: 100,
+        showAxis: false,
+        showLines: false,
         showLabels: true,
-        showTicks: true,
-        zeroAxis: false,
+        showTicks: false,
+        zeroAxis: true,
         orient: 'left',
         label: {
           fontFamily: 'Arial',
           fontSize: 14,
           fontWeight: true,
           fill: '#34495E'
+        },
+        tickCount: 5,
+        labelFunction: (item, index) => {
+          if (index == 0) {
+            return " "
+          }
+
+          return item
         }
       }
     }
 
     return (
-      <View>
+      <View style={{backgroundColor: '#000000'}}>
         <SmoothLine data={data} options={options} xKey='x' yKey='y' />
       </View>
     )

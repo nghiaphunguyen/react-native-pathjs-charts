@@ -34,19 +34,20 @@ class AxisStruct {
 
   static calcStepSize(range, targetSteps)
   {
-    const tempStep = range / targetSteps
-    const mag = Math.floor(Math.log(tempStep) /  Math.log(10))
-    const magPow = Math.pow(10, mag)
-    let magMsd = Math.round(tempStep / magPow + 0.5)
-
-    if (magMsd > 5.0)
-      magMsd = 10.0
-    else if (magMsd > 2.0)
-      magMsd = 5.0
-    else if (magMsd > 1.0)
-      magMsd = 2.0
-
-    return magMsd * magPow
+    return Math.floor(range / targetSteps)
+    // const tempStep = range / targetSteps
+    // const mag = Math.floor(Math.log(tempStep) /  Math.log(10))
+    // const magPow = Math.pow(10, mag)
+    // let magMsd = Math.round(tempStep / magPow + 0.5)
+    //
+    // if (magMsd > 5.0)
+    //   magMsd = 10.0
+    // else if (magMsd > 2.0)
+    //   magMsd = 5.0
+    // else if (magMsd > 1.0)
+    //   magMsd = 2.0
+    //
+    // return magMsd * magPow
   }
 
   static roundFloat(floatVal, decimalPlaces) {
@@ -70,7 +71,7 @@ class AxisStruct {
     const currentAxis = horizontal?xAxis:yAxis
     const tickInterval = this.options.tickCount || 10
     const decimalPlaces = this.options.decimalPlaces || 2
-    const ticks = this.options.tickValues !== undefined && this.options.tickValues.length !== 0? _.map(this.options.tickValues,function(v){return v.value }):AxisStruct.getTickValues(currentAxis, tickInterval, decimalPlaces)
+    const ticks = this.options.tickValues !== undefined && this.options.tickValues.length !== 0? _.map(this.options.tickValues,function(v){return v}):AxisStruct.getTickValues(currentAxis, tickInterval, decimalPlaces)
     const fixed = this.options.zeroAxis?this.scale(0):horizontal?yAxis.min:xAxis.min
     const start = {x: horizontal?xAxis.min:fixed, y: horizontal?fixed:yAxis.min}
     const end = {x:horizontal?xAxis.max:fixed,y: horizontal?fixed:yAxis.max}
@@ -127,7 +128,7 @@ export default class Axis extends Component {
     const textStyle = fontAdapt(options.label)
 
     const ticks =_.map(axis.ticks, function (c, i) {
-      const label = options.labelFunction !== undefined? options.labelFunction.apply(this, [c]) : c
+      const label = options.labelFunction !== undefined? options.labelFunction(c, i) : c
       let scaleBase = isNaN(c) ? i : c
       let gxy = horizontal ? [scale(scaleBase),chartArea.y.min]:[chartArea.x.min,scale(scaleBase)]
 

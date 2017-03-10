@@ -39,7 +39,7 @@
   "dependencies": {
     "babel-polyfill": "^6.23.0",
     "lodash": "^4.12.0",
-    "paths-js": "^0.4.5",
+    "paths-js": "git+https://github.com/nghiaphunguyen/paths-js.git",
     "react-native-svg": "~4.5.0"
   },
   "devDependencies": {
